@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Delivery Boi Rider ID</title>
+<style>
+:root{--bg:#fff7ea;--surface:#ffffff;--text:#1b2540;--muted:#5d6784;--accent:#ff7a00;--accent-text:#ffffff;--border:#ecd9bd;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1526;--surface:#18223a;--text:#f3efe6;--muted:#a6b0cb;--border:#2b3757}}
+:root[data-theme="dark"]{--bg:#0e1526;--surface:#18223a;--text:#f3efe6;--muted:#a6b0cb;--border:#2b3757}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.45}
+main{max-width:560px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.6rem;margin:0 0 4px}
+p.sub{margin:0 0 18px;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:18px}
+label{display:block;font-weight:600;font-size:.9rem;margin:12px 0 5px}
+label:first-child{margin-top:0}
+input,select{width:100%;padding:12px;font-size:1rem;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text)}
+input[type=file]{padding:9px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+canvas{display:block;width:100%;height:auto;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.25)}
+button{width:100%;margin-top:16px;padding:14px;font-size:1.05rem;font-weight:700;border:0;border-radius:12px;background:var(--accent);color:var(--accent-text);cursor:pointer}
+button:active{transform:scale(.98)}
+.note{font-size:.82rem;color:var(--muted);margin-top:10px;text-align:center}
+</style>
+</head>
+<body>
+<main>
+  <h1>Delivery Boi Rider ID</h1>
+  <p class="sub">Make your fan rider ID and share it before the premiere.</p>
+
+  <div class="panel">
+    <label for="name">Rider name</label>
+    <input id="name" maxlength="28" placeholder="Your name or username" autocomplete="off">
+    <div class="row">
+      <div>
+        <label for="city">City or country</label>
+        <input id="city" maxlength="24" placeholder="e.g. Cebu City" autocomplete="off">
+      </div>
+      <div>
+        <label for="region">Region</label>
+        <select id="region">
+          <option>Luzon</option><option>Visayas</option><option>Mindanao</option><option>International</option>
+        </select>
+      </div>
+    </div>
+    <label for="role">Rider role</label>
+    <select id="role">
+      <option>Streaming Rider</option><option>Voting Rider</option><option>Trending Rider</option>
+      <option>Fan Art Rider</option><option>Project Rider</option><option>Express Rider</option>
+    </select>
+    <label for="photo">Photo (optional)</label>
+    <input id="photo" type="file" accept="image/*">
+  </div>
+
+  <canvas id="c" width="1080" height="1350" aria-label="Rider ID preview"></canvas>
+  <button id="dl" type="button">Download Rider ID (1080 x 1350)</button>
+  <p class="note">Premieres Oct 19, 2026 on GMA Afternoon Prime, weekdays 3:20 PM. Fan-made.</p>
+</main>
+
+<script>
+(function(){
+  var cv=document.getElementById('c'),ctx=cv.getContext('2d');
+  var $=function(id){return document.getElementById(id)};
+  var img=null;
+  var NAVY='#14213d',ORANGE='#ff7a00',CREAM='#fffaf0';
+
+  function hash(s){var h=7;for(var i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))>>>0}return h}
+  function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+  function fit(text,max,size,weight){
+    var s=size;
+    do{ctx.font=weight+' '+s+'px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';s-=2}
+    while(ctx.measureText(text).width>max&&s>24);
+  }
+
+  function draw(){
+    var name=$('name').value.trim()||'YOUR NAME';
+    var city=$('city').value.trim()||'Philippines';
+    var region=$('region').value,role=$('role').value;
+    var seed=hash(name.toLowerCase()+city.toLowerCase());
+    var num=String(seed%999+1);while(num.length<3)num='0'+num;
+
+    var g=ctx.createLinearGradient(0,0,0,1350);
+    g.addColorStop(0,'#1d2f57');g.addColorStop(1,'#0b1426');
+    ctx.fillStyle=g;ctx.fillRect(0,0,1080,1350);
+
+    // card
+    rr(60,60,960,1230,48);ctx.fillStyle=CREAM;ctx.fill();
+    ctx.save();rr(60,60,960,1230,48);ctx.clip();
+    ctx.fillStyle=ORANGE;ctx.fillRect(60,60,960,230);
+    ctx.fillStyle='rgba(255,255,255,.18)';
+    for(var i=0;i<12;i++){ctx.fillRect(60+i*90,262,50,28)}
+    ctx.restore();
+
+    ctx.textAlign='center';ctx.textBaseline='alphabetic';
+    ctx.fillStyle='#fff';ctx.font='800 96px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+    ctx.fillText('DELIVERY BOI',540,180);
+    ctx.font='600 32px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+    ctx.fillText('OFFICIAL FAN RIDER ID',540,232);
+
+    // photo frame
+    var px=330,py=335,ps=420;
+    rr(px-10,py-10,ps+20,ps+20,44);ctx.fillStyle=NAVY;ctx.fill();
+    ctx.save();rr(px,py,ps,ps,36);ctx.clip();
+    if(img){
+      var r=Math.max(ps/img.width,ps/img.height),w=img.width*r,h=img.height*r;
+      ctx.drawImage(img,px+(ps-w)/2,py+(ps-h)/2,w,h);
+    }else{
+      ctx.fillStyle='#e8dcc6';ctx.fillRect(px,py,ps,ps);
+      ctx.fillStyle=NAVY;ctx.font='800 190px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+      ctx.textBaseline='middle';
+      ctx.fillText((name[0]||'R').toUpperCase(),px+ps/2,py+ps/2+10);
+      ctx.textBaseline='alphabetic';
+    }
+    ctx.restore();
+
+    // name and role
+    ctx.fillStyle=NAVY;fit(name.toUpperCase(),840,76,'800');
+    ctx.fillText(name.toUpperCase(),540,865);
+    ctx.fillStyle=ORANGE;ctx.font='700 40px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+    ctx.fillText(role.toUpperCase(),540,925);
+
+    // details
+    ctx.strokeStyle='#e2d3b8';ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(120,955);ctx.lineTo(960,955);ctx.stroke();
+    var rows=[['RIDER NO.','DELIVERY-BOI-'+num],['REGION',region],['BASE',city]];
+    ctx.font='700 28px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+    rows.forEach(function(r,i){
+      var y=1005+i*52;
+      ctx.textAlign='left';ctx.fillStyle='#7b6f58';ctx.font='700 26px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+      ctx.fillText(r[0],120,y);
+      ctx.textAlign='right';ctx.fillStyle=NAVY;fit(r[1],560,34,'700');
+      ctx.fillText(r[1],960,y);
+    });
+
+    // barcode
+    var bx=120,by=1165,s=seed;
+    ctx.fillStyle=NAVY;
+    while(bx<950){
+      s=(s*1103515245+12345)>>>0;
+      var bw=3+(s>>>16)%7;
+      if(bx+bw>960)break;
+      ctx.fillRect(bx,by,bw,56);
+      bx+=bw+3+(s>>>8)%5;
+    }
+
+    // footer
+    ctx.save();rr(60,60,960,1230,48);ctx.clip();
+    ctx.fillStyle=NAVY;ctx.fillRect(60,1232,960,58);
+    ctx.restore();
+    ctx.textAlign='center';ctx.fillStyle='#fff';
+    ctx.font='600 25px system-ui,-apple-system,Segoe UI,Roboto,sans-serif';
+    ctx.fillText('PREMIERE OCT 19, 2026  |  GMA AFTERNOON PRIME  |  3:20 PM',540,1269);
+  }
+
+  ['name','city','region','role'].forEach(function(id){
+    $(id).addEventListener('input',draw);$(id).addEventListener('change',draw);
+  });
+  $('photo').addEventListener('change',function(e){
+    var f=e.target.files&&e.target.files[0];if(!f)return;
+    var u=URL.createObjectURL(f),im=new Image();
+    im.onload=function(){img=im;draw()};im.src=u;
+  });
+  $('dl').addEventListener('click',function(){
+    var a=document.createElement('a');
+    var n=($('name').value.trim()||'rider').replace(/[^a-z0-9]+/gi,'-').toLowerCase();
+    a.download='delivery-boi-rider-id-'+n+'.png';
+    a.href=cv.toDataURL('image/png');a.click();
+  });
+  draw();
+})();
+</script>
+</body>
+</html>
